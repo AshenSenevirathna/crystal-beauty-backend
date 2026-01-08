@@ -122,6 +122,14 @@ export async function createOrder(req, res){
 
         const savedOrder = await newOrder.save()
 
+        // for (let i = 0; i < itemsToBeAdded.length; i++) {
+        //     const item = itemsToBeAdded[i];
+        //     await Product.updateOne(
+        //         {productId: item.productId},
+        //         {$inc: {stock: -item.quantity}}
+        //     );
+        // }
+
         res.status(201).json(
             {
                 message : "Order created successfully",
@@ -137,5 +145,22 @@ export async function createOrder(req, res){
             }
         );
         console.log(err);
+    }
+}
+
+export async function getOrders(req, res){
+    if (isAdmin(req)) {
+        const orders = await Order.find().sort({date:-1});
+        res.json(orders);
+    }else if(isCustomer(req)){
+        const user = req.user;
+        const orders = await Order.find({email: user.email}).sort({date:-1});
+        res.json(orders);
+    }else{
+        res.status(403).json(
+            {
+                message: "You are not authorized to view orders"
+            }
+        );
     }
 }
