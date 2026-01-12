@@ -92,3 +92,29 @@ export function isAdmin(req){
     }
     return true;
 }
+
+export function isCustomer(req){
+    if (req.user == null) {
+        return false;
+    }
+
+    if (req.user.role != "user") {
+        return false;
+    }
+    return true;
+}
+
+export function getUser(req, res){
+    if (req.user == null) {
+        res.status(401).json(
+            {
+                message : "Unauthorized"
+            }
+        );
+        return;
+    }else{
+        res.json(
+            req.user
+        );
+    }
+}
