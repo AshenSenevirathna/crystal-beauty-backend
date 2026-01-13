@@ -52,7 +52,8 @@ export function loginUser(req, res) {
                             firstName : user.firstName,
                             lastName : user.lastName,
                             role : user.role,
-                            isEmailVerified : user.isEmailVerified
+                            isEmailVerified : user.isEmailVerified,
+                            image : user.image
                         },
                         process.env.JWT_SECRET
                     )
