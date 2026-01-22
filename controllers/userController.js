@@ -240,5 +240,30 @@ export async function getAllUsers(req, res){
 }
 
 export async function blockOrUnblockUser(req, res){
-    
+    if(!isAdmin(req)){
+        res.status(403).json({
+            message : "Forbidden"
+        });
+        return;
+    }
+
+    if (req.user.email === req.params.email) {
+        res.status(400).json({
+            message : "You cannot block yourself"
+        });
+        return;
+    }
+
+    try {
+        await User.updateOne({
+            email: req.params.email
+        },{
+            isBlock: req.body.isBlock
+        }
+    );
+    } catch (err) {
+        res.status(500).json({
+            message : "Failed to block/unblock user"
+        });
+    }
 }
