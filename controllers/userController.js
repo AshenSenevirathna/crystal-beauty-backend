@@ -44,6 +44,12 @@ export function loginUser(req, res) {
                     message: "User not found"
                 });
             } else {
+                if(user.isBlock){
+                    res.status(403).json({
+                        message: "Your account has been blocked.Please contact admin"
+                    });
+                    return;
+                }
                 const isPasswordMatching = bcrypt.compareSync(req.body.password, user.password);
                 if (isPasswordMatching) {
 
@@ -183,6 +189,12 @@ export async function googleLogin(req, res) {
 
         }else{
             //login the user
+            if(user.isBlock){
+                res.status(403).json({
+                    message: "Your account has been blocked.Please contact admin."
+                });
+                return;
+            }
             const jwtToken = jwt.sign(
                 {
                     email: user.email,
@@ -241,6 +253,7 @@ export async function getAllUsers(req, res){
 
 export async function blockOrUnblockUser(req, res){
     if(!isAdmin(req)){
+        console.log(req.user)
         res.status(403).json({
             message : "Forbidden"
         });
@@ -259,8 +272,11 @@ export async function blockOrUnblockUser(req, res){
             email: req.params.email
         },{
             isBlock: req.body.isBlock
-        }
-    );
+        });
+
+        res.json({
+            message: "User block status updated successfully"
+        })
     } catch (err) {
         res.status(500).json({
             message : "Failed to block/unblock user"

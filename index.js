@@ -19,10 +19,10 @@ app.use(express.json());
 app.use(
     (req, res, next) => {
         let token = req.header("Authorization")
+        console.log("Token",token);
 
         if (token != null) {
             token = token.replace("Bearer ", "");
-            console.log(token);
             jwt.verify(token, process.env.JWT_SECRET,
                 (err,decoded) => {
                     if(decoded == null){
